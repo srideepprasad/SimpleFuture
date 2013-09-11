@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'idea'    //Comment out to disable IntelliJ Idea Support
+
+repositories {
+    mavenCentral()
+}
+
+List TEST_DEPS = [
+        'junit:junit:4.10',
+        'org.mockito:mockito-all:1.9.5',
+        'org.apache.commons:commons-lang3:3.1'
+]
+
+dependencies {
+    testCompile TEST_DEPS
+    testRuntime TEST_DEPS
+}
