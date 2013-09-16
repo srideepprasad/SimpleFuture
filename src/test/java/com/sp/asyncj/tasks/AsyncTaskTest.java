@@ -7,7 +7,7 @@ import com.sp.asyncj.exceptions.IllegalOperationException;
 import com.sp.asyncj.executor.Executor;
 import com.sp.asyncj.model.Result;
 import com.sp.asyncj.support.Function;
-import org.apache.commons.lang3.reflect.FieldUtils;
+import com.sp.asyncj.test.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -143,7 +143,7 @@ public class AsyncTaskTest {
         sut.run();
 
         verify(executor).submit(taskArgumentCaptor.capture());
-        assertSame(mock, readField(taskArgumentCaptor.getValue(), "sync.callable.function"));
+        assertSame(mock, TestUtils.readField(taskArgumentCaptor.getValue(), "sync.callable.function"));
         System.out.println(taskArgumentCaptor.getValue());
     }
 
@@ -154,8 +154,9 @@ public class AsyncTaskTest {
 
         final AsyncTask mappedTask = sut.map(function);
 
-        assertSame(function, readField(mappedTask, "sync.callable.function"));
-        assertSame(taskExceptionListener, readField(mappedTask, "taskExeceptionListener"));
+        assertSame(function, TestUtils.readField(mappedTask, "sync.callable.function"));
+        assertSame(taskExceptionListener, TestUtils.readField(mappedTask, "taskExeceptionListener"));
+        assertSame(sut, TestUtils.readField(mappedTask, "sync.callable.input"));
     }
 
 
@@ -167,14 +168,5 @@ public class AsyncTaskTest {
         sut.map(function);
     }
 
-
-    private static Object readField(Object obj, String field) throws IllegalAccessException {
-        final String[] parts = field.split("\\.");
-        Object target = obj;
-        for (String part : parts) {
-            target = FieldUtils.readField(target, part, true);
-        }
-        return target;
-    }
 
 }
