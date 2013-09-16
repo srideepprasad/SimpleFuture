@@ -148,11 +148,16 @@ public class AsyncTaskTest {
     }
 
     @Test
-    public void map_shouldReturnMappedTask() throws IllegalAccessException {
+    public void map_shouldReturnMappedTask_WithCurrentExceptionHandler() throws IllegalAccessException {
         Function function = mock(Function.class);
+        sut.onException(taskExceptionListener);
+
         final AsyncTask mappedTask = sut.map(function);
+
         assertSame(function, readField(mappedTask, "sync.callable.function"));
+        assertSame(taskExceptionListener, readField(mappedTask, "taskExeceptionListener"));
     }
+
 
     @Test (expected = IllegalOperationException.class)
     public void map_shouldFail_IfTaskAlreadySubmitted(){
