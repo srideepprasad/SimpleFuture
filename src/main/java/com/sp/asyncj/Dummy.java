@@ -1,8 +1,8 @@
 package com.sp.asyncj;
 
+import com.sp.asyncj.callbacks.TaskListener;
 import com.sp.asyncj.executor.SimpleExecutor;
 import com.sp.asyncj.model.Result;
-import com.sp.asyncj.support.Callback;
 import com.sp.asyncj.support.Function;
 import com.sp.asyncj.tasks.AsyncTask;
 
@@ -21,7 +21,7 @@ public class Dummy {
             }
         });
 
-        integerAsyncTask.onFinish(new Callback<Integer>() {
+        integerAsyncTask.listen(new TaskListener<Integer>() {
             @Override
             public void onComplete(Result<Integer> result) {
                 System.out.println(result.getValue());
@@ -38,10 +38,6 @@ public class Dummy {
                     }
                 }).getValue());
 
-            }
-
-            @Override
-            public void onException(Exception exception) {
             }
 
             @Override
