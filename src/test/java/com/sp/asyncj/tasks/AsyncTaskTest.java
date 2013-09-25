@@ -129,44 +129,5 @@ public class AsyncTaskTest {
         verify(taskListener,never()).onCancel();
     }
 
-    @Test
-    public void run_shouldSubmitMappedTask_WhenDefined() throws ExecutionException, InterruptedException, IllegalAccessException {
-
-        Function mock = mock(Function.class);
-        ArgumentCaptor<AsyncTask> taskArgumentCaptor = ArgumentCaptor.forClass(AsyncTask.class);
-        AsyncTask<Integer> sut = spy(this.sut);
-
-        doReturn(1).when(sut).get();
-
-        sut.map(mock);
-
-        sut.run();
-
-        verify(executor).submit(taskArgumentCaptor.capture());
-        assertSame(mock, TestUtils.readField(taskArgumentCaptor.getValue(), "sync.callable.function"));
-        System.out.println(taskArgumentCaptor.getValue());
-    }
-
-    @Test
-    public void map_shouldReturnMappedTask_WithCurrentExceptionHandler() throws IllegalAccessException {
-        Function function = mock(Function.class);
-        sut.onException(taskExceptionListener);
-
-        final AsyncTask mappedTask = sut.map(function);
-
-        assertSame(function, TestUtils.readField(mappedTask, "sync.callable.function"));
-        assertSame(taskExceptionListener, TestUtils.readField(mappedTask, "taskExeceptionListener"));
-        assertSame(sut, TestUtils.readField(mappedTask, "sync.callable.input"));
-    }
-
-
-    @Test (expected = IllegalOperationException.class)
-    public void map_shouldFail_IfTaskAlreadySubmitted(){
-        sut.execute();
-
-        Function function = mock(Function.class);
-        sut.map(function);
-    }
-
 
 }
