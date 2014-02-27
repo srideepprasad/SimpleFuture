@@ -11,11 +11,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 public class AsyncTask<OUTPUT_TYPE> extends FutureTask<OUTPUT_TYPE> {
-    private TaskListener<OUTPUT_TYPE> taskListener;
-    private Executor executor;
-    private OUTPUT_TYPE result;
-    private TaskExceptionListener taskExeceptionListener;
-    private boolean submitted = false;
+    private volatile TaskListener<OUTPUT_TYPE> taskListener;
+    private final Executor executor;
+    private volatile OUTPUT_TYPE result;
+    private volatile TaskExceptionListener taskExeceptionListener;
+    private volatile boolean submitted = false;
 
     public AsyncTask(Callable<OUTPUT_TYPE> callable, Executor executor) {
         super(callable);
