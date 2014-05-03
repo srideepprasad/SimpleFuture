@@ -27,20 +27,20 @@ By default, an instance of DefaultExecutor is used, which provides a max thread 
 
 * __Step 2 (Optional) - Setup async callbacks__
 
-Setup a TaskResultHandler which would receive callback notifications (on task completion/cancellation/exception)
+Setup a TaskResultHandler which would receive callback notifications (on task completion/cancellation/exception). The handle is genericized, so the onComplete() callback has the write parameter type
 
 ```
         task.resultTo(new TaskResultHandler<Double>() {
             @Override public void onComplete(Double result) {
-                System.out.println(result);
+                //Handle result
             }
 
             @Override public void onCancel() {
-
+                //Handle cancellation
             }
 
             @Override public void onException(Exception ex) {
-
+                //Handle exceptions
             }
         });
 ```
