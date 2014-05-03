@@ -17,30 +17,30 @@ Usage is straightfoward, and self explanatory (if you have used Executors/Future
 Create an AsyncTaskDef for a standard Java callable task
 
 ```
-        AsyncTaskDef<Double> task = AsyncTaskDef.forTask(callableTask);
+        AsyncTaskDef<Double> taskDef = AsyncTaskDef.forTask(callableTask);
 ```
 By default, an instance of DefaultExecutor is used, which provides a max thread pool of 20 threads. If required, you could use any other executor as well
 
 ```
-        AsyncTaskDef<Double> task = AsyncTaskDef.forTask(callableTask,someExecutor);
+        AsyncTaskDef<Double> taskDef = AsyncTaskDef.forTask(callableTask,someExecutor);
 ```
 
 * __Step 2 (Optional) - Setup async callbacks__
 
-Setup a TaskResultHandler which would receive callback notifications (on task completion/cancellation/exception). The handle is genericized, so the onComplete() callback has the write parameter type
+Setup a TaskResultHandler which would receive callback notifications (on task completion/cancellation/exception)
 
 ```
-        task.resultTo(new TaskResultHandler<Double>() {
+        taskDef.resultTo(new TaskResultHandler<Double>() {
             @Override public void onComplete(Double result) {
-                //Handle result
+                System.out.println(result);
             }
 
             @Override public void onCancel() {
-                //Handle cancellation
+
             }
 
             @Override public void onException(Exception ex) {
-                //Handle exceptions
+
             }
         });
 ```
@@ -51,7 +51,7 @@ Alternately, you could also extend the NoOpTaskResultHandler and only override t
 
 You are ready to go ! Just call execute()
 ```
-  AsyncTask task = task.execute();
+  AsyncTask task = taskDef.execute();
 ```
 AsyncTask is an implementation of standard Java Future interface. So all standard Future / Executor related constructs work as per official JDK specs.
 And if you want to relive the old "blocking" Future, you can still call AsyncTask.get() !
