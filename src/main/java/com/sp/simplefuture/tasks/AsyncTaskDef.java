@@ -27,8 +27,8 @@ public class AsyncTaskDef<OUTPUT_TYPE>{
         return new AsyncTaskDef<T>(callable, executor);
     }
 
-    public AsyncTask<OUTPUT_TYPE> execute(){
-        final AsyncTask<OUTPUT_TYPE> asyncTask = new AsyncTask<OUTPUT_TYPE>(callable, (taskResultHandler != null) ? taskResultHandler : new NoOpResultHandler<OUTPUT_TYPE>());
+    public AsyncTask<OUTPUT_TYPE> submit(){
+        final AsyncTask<OUTPUT_TYPE> asyncTask = new AsyncTask<OUTPUT_TYPE>(callable, (taskResultHandler != null) ? taskResultHandler : new NoOpResultHandler<OUTPUT_TYPE>(), executor);
         executor.execute(asyncTask);
         return asyncTask;
     }

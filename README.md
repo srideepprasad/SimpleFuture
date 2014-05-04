@@ -2,11 +2,11 @@ SimpleFuture [![Build Status](https://travis-ci.org/srideepprasad/SimpleFuture.p
 ======
 ####The Future's simple - once you "un-block" it !
 
-Simple library to demonstrate 'non-blocking' future's in Java. No need of Future.get() anymore - instead rely on dynamic notification for completion/cancellation/failure
+Simple library to demonstrate 'non-blocking' futures (background async tasks) in Java. No need of "blocking" Future.get() anymore - instead rely on dynamic notification for completion/cancellation/failure.
+Demonstrates possible techniques by which fancy Future abstractions could be provided - as is done now in Scala for example. At the heart of it, we just need a way to tap into the Future/Executor framework to get dynamic notifications on task execution events.
+The core JDK provides all that's necessary for non-blocking Futures - unfortunately. there's no readymade implementation (Java 1.5-1.7), giving rise to the misconception that these are not possible in core Java.
 
-Demonstrates the techniques by which fancy Future abstractions are provided by various JVM languages / frameworks - at the core, all these rely on the standard Java ExecutorService/ThreadPoolExecutor/Future classes in some way or the other
-
-NOTE: Java 8 includes the CompletableFuture class which is a huge step forward, and may be worth a look.
+Having said that, Java 8 includes the CompletableFuture class which is a huge step forward, and may be worth a look.
 
 #####Usage
 ***
@@ -49,20 +49,25 @@ Alternately, you could also extend the NoOpTaskResultHandler and only override t
 
 * __Step 3 - Execution__
 
-You are ready to go ! Just call execute()
+You are ready to go ! Just call submit()
 ```
-  AsyncTask task = taskDef.execute();
+  Future<Double> task = taskDef.submit();
 ```
-AsyncTask is an implementation of standard Java Future interface. So all standard Future / Executor related constructs work as per official JDK specs.
-And if you want to relive the old "blocking" Future, you can still call AsyncTask.get() !
+You now have a Future instance, which will notify the TaskResultHandler via callbacks on completion/cancellation/exception of the background task..
+No need of Future.get() - though you can still call it if needed! This Future implementation (AsyncTask class) follows standard JDK specs, and therefore could easily plugged in anywhere.
 
-* __Step 4 - (Optional) Control the default executor__
+* __Step 4 - (Optional) Obtaining the Executor instance__
 
-In case you need an instance of the default Executor, you may get an instance of the same by calling :
+If you don't provide an Executor to AsyncTaskDef.forTask(), then the default Executor returned via DefaultExecutor.getInstance() is used. This executor implements a fixed thread pool of 20 threads. If you need an instance of the executor running a Future, you may do as follows:
 ```
-  DefaultExecutor.getInstance()
+  AsyncTask<Double> task = taskDef.submit();
 ```
-This method would return the sample Executor instance everytime, unless its shutdown, following which a new instance will be returned.
+Instead of:
+```
+  Future<Double> task = taskDef.submit();
+```
+AsyncTask is the class implementing the Future interface - and has an additional method getExecutor(), which returns the executor executing the task. This method may be needed if you don't provide an Executor while creating the AsyncTaskDef, and still want to control the underlying thread pool.
+
 
 
 
