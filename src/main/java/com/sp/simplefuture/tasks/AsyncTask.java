@@ -7,7 +7,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 
 /*
-Note: No tests for this class - it is excercised via AsyncTaskDefTest.
+Note: No tests for this class - it is exercised via AsyncTaskDefTest.
+This class implements the Java Future interface. Represents a running background task. Has an extra method getExecutor(), to allow
+end users to get hold of the executor running this task - may be needed if one uses the default executor, and needs to control its thread pool.
  */
 public class AsyncTask<OUTPUT_TYPE> extends FutureTask<OUTPUT_TYPE> {
     private final TaskResultHandler<OUTPUT_TYPE> taskResultHandler;

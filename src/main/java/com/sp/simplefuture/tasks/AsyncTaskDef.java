@@ -8,6 +8,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
+/*
+Defines a AsyncTask (Future)
+Allows creating a Future (background) task for the given Callable. Can use DefaultExecutor if none is provided, or can plug into any other executor.
+Defines a method resultTo(), which specifies the TaskResultHandler callback on which to report task notifications / completion.
+ */
 public class AsyncTaskDef<OUTPUT_TYPE>{
     private final Callable<OUTPUT_TYPE> callable;
     private final Executor executor;
