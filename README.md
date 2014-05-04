@@ -24,6 +24,16 @@ By default, an instance of DefaultExecutor is used, which provides a max thread 
 ```
         AsyncTaskDef<Double> taskDef = AsyncTaskDef.forTask(callableTask,someExecutor);
 ```
+The "callableTask" variable is a standard java interface, used to define background jobs - one may be created as follows:
+```
+            Callable<Double> callableTask = new Callable<Double>() {
+                @Override public Double call() throws Exception {
+                    //Some complex computation!
+                    return someValue;
+                };
+            };
+```
+This interface is generified, so you could define what type the callable task would return.
 
 * __Step 2 (Optional) - Setup async notification callbacks__
 
