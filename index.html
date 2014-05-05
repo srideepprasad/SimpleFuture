@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Simplefuture : Enhanced Non Blocking Futures for Java" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Simplefuture</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/srideepprasad/SimpleFuture">View on GitHub</a>
+
+          <h1 id="project_title">Simplefuture</h1>
+          <h2 id="project_tagline">Enhanced Non Blocking Futures for Java</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/srideepprasad/SimpleFuture/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/srideepprasad/SimpleFuture/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="simplefuture-" class="anchor" href="#simplefuture-"><span class="octicon octicon-link"></span></a>SimpleFuture <a href="https://travis-ci.org/srideepprasad/SimpleFuture"><img src="https://travis-ci.org/srideepprasad/SimpleFuture.png?branch=master" alt="Build Status"></a>
+</h1>
+
+<h4>
+<a name="the-futures-simple---once-you-un-block-it-" class="anchor" href="#the-futures-simple---once-you-un-block-it-"><span class="octicon octicon-link"></span></a>The Future's simple - once you "un-block" it !</h4>
+
+<p>Simple library to demonstrate 'non-blocking' futures (background async tasks) in Java. No need of "blocking" Future.get() anymore - instead rely on dynamic notification for completion/cancellation/failure.
+Demonstrates possible techniques by which fancy Future abstractions could be provided - as is done now in Scala for example. At the heart of it, we just need a way to tap into the Future/Executor framework to get dynamic notifications on task execution events.
+The core JDK provides all that's necessary for non-blocking Futures - unfortunately. there's no readymade implementation (Java 1.5-1.7), giving rise to the misconception that these are not possible in core Java.</p>
+
+<p>Having said that, Java 8 includes the CompletableFuture class which is a huge step forward, and may be worth a look.</p>
+
+<h5>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h5>
+
+<hr><p>Usage is straightfoward, and self explanatory (if you have used Executors/Futures before especially)</p>
+
+<ul>
+<li><strong>Step 1 - Create a Task Definition</strong></li>
+</ul><p>Create an AsyncTaskDef for a standard Java callable task</p>
+
+<pre><code>        AsyncTaskDef&lt;Double&gt; taskDef = AsyncTaskDef.forTask(callableTask);
+</code></pre>
+
+<p>By default, an instance of DefaultExecutor is used, which provides a max thread pool of 20 threads. If required, you could use any other standard java executor as well</p>
+
+<pre><code>        AsyncTaskDef&lt;Double&gt; taskDef = AsyncTaskDef.forTask(callableTask,someExecutor);
+</code></pre>
+
+<p>The "callableTask" variable is a standard java interface, used to define background jobs - one may be created as follows:</p>
+
+<pre><code>            Callable&lt;Double&gt; callableTask = new Callable&lt;Double&gt;() {
+                @Override public Double call() throws Exception {
+                    //Some complex computation!
+                    return someValue;
+                };
+            };
+</code></pre>
+
+<p>This interface is generified, so you could define what type the callable task would return.</p>
+
+<ul>
+<li><strong>Step 2 (Optional) - Setup async notification callbacks</strong></li>
+</ul><p>Setup a TaskResultHandler which would receive callback notifications (on task completion/cancellation/exception). These will be executed on the same thread which executed the callable task</p>
+
+<pre><code>        taskDef.resultTo(new TaskResultHandler&lt;Double&gt;() {
+            @Override public void onComplete(Double result) {
+                //Handle result
+            }
+
+            @Override public void onCancel() {
+                //Handle cancellation
+            }
+
+            @Override public void onException(Exception ex) {
+                //Handle exception
+            }
+        });
+</code></pre>
+
+<p>If no TaskResultHandler is defined, a NoOpTaskResultHandler instance is used internally (does nothing).
+Alternately, you could also extend the NoOpTaskResultHandler and only override the methods one is interested in</p>
+
+<ul>
+<li><strong>Step 3 - Execution</strong></li>
+</ul><p>You are ready to go ! Just call submit()</p>
+
+<pre><code>  Future&lt;Double&gt; task = taskDef.submit();
+</code></pre>
+
+<p>You now have a Future instance, which will notify the TaskResultHandler via callbacks on completion/cancellation/exception of the background task..
+No need of Future.get() - though you can still call it if needed! This Future implementation (AsyncTask class) follows standard JDK specs, and therefore could easily plugged in anywhere.</p>
+
+<ul>
+<li><strong>Step 4 - (Optional) Obtaining the Executor instance</strong></li>
+</ul><p>If you don't provide an Executor to AsyncTaskDef.forTask(), then the default Executor returned via DefaultExecutor.getInstance() is used. This executor implements a fixed thread pool of 20 threads. If you need an instance of the executor running a Future, you may do as follows:</p>
+
+<pre><code>  AsyncTask&lt;Double&gt; task = taskDef.submit();
+</code></pre>
+
+<p>Instead of:</p>
+
+<pre><code>  Future&lt;Double&gt; task = taskDef.submit();
+</code></pre>
+
+<p>AsyncTask is the class implementing the Future interface - and has an additional method getExecutor(), which returns the executor executing the task. This method may be needed if you don't provide an Executor while creating the AsyncTaskDef, and still want to control the underlying thread pool.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Simplefuture maintained by <a href="https://github.com/srideepprasad">srideepprasad</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
