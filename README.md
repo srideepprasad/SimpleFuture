@@ -1,6 +1,6 @@
 SimpleFuture [![Build Status](https://travis-ci.org/srideepprasad/SimpleFuture.png?branch=master)](https://travis-ci.org/srideepprasad/SimpleFuture)
 ======
-####The Future's simple - once you "un-block" it !
+####Non blocking Future API implementation for Java
 
 Simple library to demonstrate 'non-blocking' futures (background async tasks) in Java. No need of "blocking" Future.get() anymore - instead rely on dynamic notification for completion/cancellation/failure.
 Demonstrates possible techniques by which fancy Future abstractions could be provided - as is done now in Scala for example. At the heart of it, we just need a way to tap into the Future/Executor framework to get dynamic notifications on task execution events.
